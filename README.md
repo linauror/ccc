@@ -2,6 +2,10 @@
 
 A cross-platform CLI tool for managing Claude Code configurations (All code writing with vibe coding).
 
+## ScreenShot
+
+![CCC ScreenShot](https://github.com/linauror/ccc/blob/main/ScreenShot.png)
+
 ## Features
 
 - Add, update, delete, and list Claude Code configurations
