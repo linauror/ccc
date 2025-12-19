@@ -49,7 +49,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: 'go.mod'
+          go-version-file: "go.mod"
 
       - name: Cache Go modules
         uses: actions/cache@v4
@@ -76,19 +76,34 @@ jobs:
           mkdir -p dist/${{ matrix.name }}
           go build -ldflags="-s -w" -o dist/${{ matrix.name }}/${{ matrix.binary }} .
 
+      - name: Create release package
+        run: |
+          # Create the release archive containing only the binary
+          cd dist/${{ matrix.name }}
+
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            # For Windows, create a zip file
+            7z a -tzip ../${{ matrix.name }}.zip ${{ matrix.binary }}
+          else
+            # For Linux/macOS, create a tar.gz file
+            tar -czf ../${{ matrix.name }}.tar.gz ${{ matrix.binary }}
+          fi
+
+          cd ../..
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.name }}
-          path: dist/${{ matrix.name }}/${{ matrix.binary }}
+          path: dist/${{ matrix.name }}.*
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/ccc
-            dist/**/ccc.exe
+            dist/**/*.tar.gz
+            dist/**/*.zip
           draft: false
           prerelease: false
           generate_release_notes: true
