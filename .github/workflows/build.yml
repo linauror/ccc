@@ -76,46 +76,19 @@ jobs:
           mkdir -p dist/${{ matrix.name }}
           go build -ldflags="-s -w" -o dist/${{ matrix.name }}/${{ matrix.binary }} .
 
-      - name: Create release package
-        run: |
-          # Create a temporary directory for the source package
-          mkdir -p temp-source-package
-
-          # Export clean source code using git archive
-          git archive --format=tar.gz --output=source.tar.gz HEAD
-
-          # Extract source code to the temp directory
-          tar -xzf source.tar.gz -C temp-source-package
-
-          # Copy the built binary to the source directory
-          cp dist/${{ matrix.name }}/${{ matrix.binary }} temp-source-package/
-
-          # Create the final release archive
-          cd temp-source-package
-          if [ "${{ matrix.goos }}" = "windows" ]; then
-            7z a -tzip ../dist/${{ matrix.name }}.zip *
-            cd ..
-          else
-            tar -czf ../dist/${{ matrix.name }}.tar.gz *
-            cd ..
-          fi
-
-          # Clean up temporary files
-          rm -rf temp-source-package source.tar.gz
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.name }}
-          path: dist/${{ matrix.name }}.*
+          path: dist/${{ matrix.name }}/${{ matrix.binary }}
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/*.tar.gz
-            dist/**/*.zip
+            dist/**/ccc
+            dist/**/ccc.exe
           draft: false
           prerelease: false
           generate_release_notes: true
