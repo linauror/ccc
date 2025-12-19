@@ -83,7 +83,7 @@ jobs:
 
           if [ "${{ matrix.goos }}" = "windows" ]; then
             # For Windows, create a zip file
-            7z a -tzip ../${{ matrix.name }}.zip ${{ matrix.binary }}
+            zip -r ../${{ matrix.name }}.zip ${{ matrix.binary }}
           else
             # For Linux/macOS, create a tar.gz file
             tar -czf ../${{ matrix.name }}.tar.gz ${{ matrix.binary }}
