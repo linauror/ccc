@@ -97,7 +97,7 @@ jobs:
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/**/*.tar.gz
@@ -105,36 +105,5 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  source-package:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create source package
-        run: |
-          # Create source directory
-          mkdir -p ccc-source
-
-          # Copy source files
-          cp main.go go.mod README.md ccc-source/
-
-          # Create archive
-          tar -czf ccc-source.tar.gz ccc-source/
-
-      - name: Upload source artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: ccc-source
-          path: ccc-source.tar.gz
-
-      - name: Upload source to release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ccc-source.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
