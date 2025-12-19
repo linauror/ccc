@@ -80,15 +80,6 @@ jobs:
           # Copy source files
           cp -r ../../main.go ../../go.mod ../../README.md . 2>/dev/null || true
 
-          # Create version info
-          echo "Build Information:" > BUILD_INFO.txt
-          echo "==================" >> BUILD_INFO.txt
-          echo "Version: ${{ github.ref_name }}" >> BUILD_INFO.txt
-          echo "Commit: ${{ github.sha }}" >> BUILD_INFO.txt
-          echo "Build Date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> BUILD_INFO.txt
-          echo "Platform: ${{ matrix.goos }}/${{ matrix.goarch }}" >> BUILD_INFO.txt
-          echo "Go Version: $(go version)" >> BUILD_INFO.txt
-
           # Create archive
           if [ "${{ matrix.goos }}" = "windows" ]; then
             7z a -tzip ../${{ matrix.name }}.zip *
@@ -99,7 +90,7 @@ jobs:
           fi
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.name }}
           path: dist/${{ matrix.name }}.*
@@ -135,7 +126,7 @@ jobs:
           tar -czf ccc-source.tar.gz ccc-source/
 
       - name: Upload source artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: ccc-source
           path: ccc-source.tar.gz
